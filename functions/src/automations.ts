@@ -9,9 +9,11 @@ if (!ADMIN_FCM_TOKEN) {
 }
 
 export const handleEvent = functions.https.onRequest(async (request, response) => {
+    let automationDoc: admin.firestore.DocumentSnapshot | null = null;
+    
     try {
         const { eventName } = request.body;
-        const automationDoc = await admin.firestore().collection('automations').doc(eventName).get();
+        automationDoc = await admin.firestore().collection('automations').doc(eventName).get();
         
         if (!automationDoc.exists) {
             console.log(`No automation rule found for event: ${eventName}`);
@@ -46,8 +48,8 @@ export const handleEvent = functions.https.onRequest(async (request, response) =
     } catch (error) {
         console.error('Error processing event:', error);
         
-        // Update failure stats if it's a notification error
-        if (error instanceof Error) {
+        // Update failure stats if it's a notification error and we have a valid document
+        if (error instanceof Error && automationDoc?.exists) {
             try {
                 await automationDoc.ref.update({
                     'stats.sent': admin.firestore.FieldValue.increment(1),
