@@ -1,0 +1,56 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/server.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/analytics/segments",
+      "dest": "https://getanalyticssegments-nvi53jrcxa-du.a.run.app"
+    },
+    {
+      "src": "/api/automation-rules/test",
+      "dest": "https://testautomationrule-nvi53jrcxa-du.a.run.app"
+    },
+    {
+      "src": "/api/automation-rules",
+      "methods": ["GET"],
+      "dest": "https://getautomationrules-nvi53jrcxa-du.a.run.app"
+    },
+    {
+      "src": "/api/automation-rules",
+      "methods": ["POST"],
+      "dest": "https://createautomationrule-nvi53jrcxa-du.a.run.app"
+    },
+    {
+      "src": "/api/automation-rules/(?<ruleId>[^/]+)/toggle",
+      "dest": "https://toggleautomationrule-nvi53jrcxa-du.a.run.app?ruleId=$ruleId"
+    },
+    {
+      "src": "/api/automation-rules/(?<ruleId>[^/]+)",
+      "methods": ["PUT"],
+      "dest": "https://updateautomationrule-nvi53jrcxa-du.a.run.app?ruleId=$ruleId"
+    },
+    {
+      "src": "/api/automation-rules/(?<ruleId>[^/]+)",
+      "methods": ["DELETE"],
+      "dest": "https://deleteautomationrule-nvi53jrcxa-du.a.run.app?ruleId=$ruleId"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "src/server.ts"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "*/5 * * * *"
+    }
+  ],
+  "env": {
+    "CRON_SECRET": "@cron_secret"
+  }
+} 

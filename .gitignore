@@ -132,3 +132,11 @@ dist
 # Keep example data out
 persistentIds.json
 registration.json
+
+# 민감한 정보가 포함된 파일들
+serviceAccountKey.json
+.env
+
+# 기타 제외할 파일들
+node_modules/
+dist/

@@ -1,0 +1,54 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "pnpm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    }
+  ],
+  "hosting": {
+    "rewrites": [
+      {
+        "source": "/api/analytics/segments",
+        "function": "getAnalyticsSegments"
+      },
+      {
+        "source": "/api/automation-rules/test",
+        "function": "testAutomationRule"
+      },
+      {
+        "source": "/api/automation-rules",
+        "function": "getAutomationRules"
+      },
+      {
+        "source": "/api/automation-rules",
+        "function": "createAutomationRule"
+      },
+      {
+        "source": "/api/automation-rules/:ruleId",
+        "function": "updateAutomationRule"
+      },
+      {
+        "source": "/api/automation-rules/:ruleId",
+        "function": "deleteAutomationRule"
+      },
+      {
+        "source": "/api/automation-rules/:ruleId/toggle",
+        "function": "toggleAutomationRule"
+      }
+    ]
+  }
+}
