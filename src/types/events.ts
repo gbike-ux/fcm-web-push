@@ -1,30 +1,72 @@
-export type EventType = 
-  | 'AcademyVerifyView_VIEW'
-  | 'Appmenu_select'
-  | 'cardNotRegistered_VIEW';
+export const EVENT_NOTIFICATIONS = {
+    AcademyVerifyView_VIEW: '아카데미 인증 화면 조회',
+    Appmenu_select: '앱 메뉴 선택',
+    cardNotRegistered_VIEW: '카드 미등록 화면 조회'
+} as const;
 
-export interface NotificationEvent {
-  eventType: EventType;
-  title: string;
-  body: string;
-  imageUrl?: string;
-  platform?: 'all' | 'ios' | 'android';
+export type EventType = keyof typeof EVENT_NOTIFICATIONS;
+
+export interface NotificationPayload {
+    title: string;
+    body: string;
+    imageUrl?: string;
+    clickAction?: string;
+    translations?: {
+        [key: string]: {
+            title: string;
+            body: string;
+        }
+    };
+    data?: Record<string, string>;
 }
 
-export const EVENT_NOTIFICATIONS: Record<EventType, Omit<NotificationEvent, 'eventType'>> = {
-  'AcademyVerifyView_VIEW': {
-    title: '학원 인증이 필요합니다',
-    body: '학원 인증을 완료하고 더 많은 기능을 사용해보세요',
-    imageUrl: '/images/academy-verify.png'
-  },
-  'Appmenu_select': {
-    title: '메뉴 선택',
-    body: '새로운 메뉴가 선택되었습니다',
-    imageUrl: '/images/menu-select.png'
-  },
-  'cardNotRegistered_VIEW': {
-    title: '카드 등록이 필요합니다',
-    body: '결제 카드를 등록하고 서비스를 이용해보세요',
-    imageUrl: '/images/card-register.png'
-  }
-}; 
+export interface Schedule {
+    type: 'once' | 'daily' | 'weekly' | 'monthly';
+    startDate: string;
+    endDate?: string;
+    daysOfWeek?: number[];
+    time?: string;
+}
+
+export interface Target {
+    all: boolean;
+    ios: boolean;
+    android: boolean;
+}
+
+export interface AutomationHistory {
+    id: string;
+    timestamp: Date;
+    success: boolean;
+    error?: string;
+    recipients?: number;
+}
+
+export interface AutomationStats {
+    sent: number;
+    success: number;
+    failure: number;
+    clicks: number;
+    conversions: number;
+}
+
+export interface AutomationRule {
+    id?: string;
+    name: string;
+    eventType: EventType;
+    notification: NotificationPayload;
+    schedule?: Schedule;
+    target: Target;
+    enabled: boolean;
+    archived?: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    lastTriggered?: Date;
+    createdBy?: {
+        id: string;
+        email: string;
+        name: string;
+    };
+    stats?: AutomationStats;
+    history?: AutomationHistory[];
+} 
